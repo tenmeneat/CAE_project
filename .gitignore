@@ -1,0 +1,34 @@
+# MATLAB
+*.asv
+*.m~
+slprj/
+*.slxc
+*.autosave
+
+# COMSOL
+*.mph.bak
+*.mph.status
+*.mphtxt~
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Data / generated outputs (large, regenerable — do not commit)
+data/raw/
+data/tracks/*
+!data/tracks/.gitkeep
+*.mat
+*.csv
+!**/schema_example.csv
+outputs/
+*.mp4
+*.avi
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
