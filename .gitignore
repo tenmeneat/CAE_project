@@ -19,7 +19,6 @@ venv/
 
 # Data / generated outputs (large, regenerable — do not commit)
 data/raw/
-data/cache/
 data/tracks/*
 !data/tracks/.gitkeep
 *.mat

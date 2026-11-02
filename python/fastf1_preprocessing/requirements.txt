@@ -1,5 +1,0 @@
-fastf1>=3.4
-numpy>=1.26
-pandas>=2.0
-scipy>=1.11
-pytest>=8.0

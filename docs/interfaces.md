@@ -5,29 +5,13 @@ v0.5에서 I5를 추가, v0.7에서 I4를 추가했다.
 
 | ID | 방향 | 파일 / 함수 | 내용 |
 |---|---|---|---|
-| I0 | Python → A | `fastf1_<track>.csv` | `s, x, y, z, v, throttle, brake` (여러 랩 평균, s 정렬 완료). A 내부 전처리용 |
+| I0 | Python → A | `fastf1_<track>.csv` | `s[m], x[m], y[m], z[m], v[m/s], throttle[0–1], brake[0–1]` (여러 랩 평균, s 정렬 완료). `s`는 TUMFTM 레이스라인 기준, `x,y`는 FastF1 좌표계. `brake`는 제동 중인 랩의 비율. A 내부 전처리용 |
 | I1 | A → B | `wheel_forces_<track>_<scn>_<ctrl>.mat` | `t`, 코너별 휠센터력 `(Fx,Fy,Fz)` 4×3, 액추에이터 힘 4개, **스프링·댐퍼 힘 4개**, 제어기·**시나리오 태그** |
 | I2 | B → A | `res = lca_damage(wf)` | 입력 I1 구조체와 **프런트 마운트 위치 p**(리어는 고정값) → `res.D`(랩당 손상), **`res.DEL`, `res.sigma_peak`**, `res.Dsec`(구간별 손상), `res.sig`(핫스팟 응력 시계열), **`res.parts`**(응력 기여 분해: 준정적 Fx/Fy, 수직 진동, 액추에이터 성분). A가 스윕 루프에서 호출하고 `R = D/D_passive` 계산 |
 | I3 | A·B → 뷰어 | `replay_<track>_<ctrl>.mat` | `t, s, x, y, psi, v, ax, ay, F_BJ, sigma_hot, D_cum` |
 | I4 | A 내부 → 뷰어·슬라이드 | `sweep_results_<track>.mat` | 후보 제어기·가중치, 3축 지표, 제약 판정, 선정 결과. p·시나리오 차원 포함, 2단계 선정 결과 |
 | I5 | B → A | `act_thermal_<act>.mat` | `Kf, Rcoil`, 열저항 `Rth`, 온도 한계 `Tlim`, 열적 연속 힘 한계 `Fth`, 최대 열응력. A가 블록 6에서 `F_rms ≤ Fth` 판정 |
 | C | 블록4a → 블록5 | 응력계수 표 | 단위하중(볼조인트 Fx,Fy,Fz 각 1N, 액추에이터 마운트 1N)별 핫스팟 응력텐서 6성분. **마운트 위치 p별로 반복**(약 9–16회 정적 해석) |
-
-## I0 상세 (구현안 — W1 합의 대상)
-
-`python/fastf1_preprocessing/` 구현 기준. 헤더 1행 + 데이터, 콤마 구분, 컬럼 순서 고정.
-
-| 컬럼 | 단위 | 의미 |
-|---|---|---|
-| `s` | m | TUMFTM 레이스라인 호장. 0 = 레이스라인 파일 첫 점(재샘플). 등간격 Δs ≈ 1 m (= L/N), 폐곡선이라 마지막 행 다음이 s = L |
-| `x`, `y` | m | 재샘플한 TUMFTM 레이스라인 좌표 (TUMFTM 좌표계). 블록 1이 그대로 κ(s) 계산에 사용 가능 |
-| `z` | m | FastF1 Z 랩 중앙값 + 주기 평활(차단 파장 λc, 기본 50 m). 절대 해발 아님 — 상대 고저만 의미 |
-| `v` | m/s | 속도용 랩(슬릭·퀵랩) 중앙값. **방법론 검증 비교용** — 하중 입력으로 쓰지 않음 |
-| `throttle` | 0–1 | 속도용 랩 중앙값 |
-| `brake` | 0–1 | 해당 위치에서 브레이크를 밟은 랩 비율 |
-
-F1 타이밍 라인 위치는 `fastf1_<track>_meta.json`의 `start_offset_m` (레이스라인 s). 정합 품질·고저차 검증값도
-같은 파일에 있다.
 
 ## 공통 규약 (W1 확정)
 
@@ -39,7 +23,7 @@ F1 타이밍 라인 위치는 `fastf1_<track>_meta.json`의 `start_offset_m` (�
 
 ## 스키마 확정 체크리스트
 
-- [ ] I0 CSV 컬럼 순서/헤더 확정 — 구현안 위 표 (단위: v m/s, throttle·brake 0–1, s 원점 = TUMFTM 레이스라인 첫 점). B 동의 후 체크
+- [x] I0 CSV 컬럼 순서/헤더 확정
 - [ ] I1 `.mat` 구조체 필드명 확정 (스프링·댐퍼 힘 포함, 시나리오 태그 포함)
 - [ ] `lca_damage()` 함수 시그니처 확정 — 입력에 **마운트 위치 p** 포함, 출력 struct 필드명(`D, DEL, sigma_peak, Dsec, sig, parts`)
 - [ ] I4 스윕 결과 스키마 — p × 시나리오 × 제어기 조합을 어떻게 테이블로 저장할지 (long format 권장)
