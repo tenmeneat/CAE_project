@@ -9,20 +9,21 @@ import os
 import sys
 from pathlib import Path
 
-import fastf1
 import numpy as np
 import pandas as pd
 from scipy.interpolate import splev, splrep
 from scipy.ndimage import gaussian_filter1d
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-RACELINE_DIR = REPO_ROOT / "data" / "tracks" / "racetrack-database" / "racelines"
+RACELINE_DIR = REPO_ROOT / "data" / "tracks" / "tumftm" / "racelines"  # 레포에 포함 (Spa)
 CACHE_DIR = Path.home() / ".cache" / "fastf1"  # OneDrive 밖에 둔다 (세션당 수백 MB)
 CHANNELS = ["x", "y", "z", "v", "throttle", "brake"]
 
 
 def load_session(year: int, grand_prix: str, session: str):
     """FastF1 세션 로드. session 예: 'R' (레이스). D9 기준 세션은 docs/decisions.md 참고."""
+    import fastf1  # 여기서만 필요 — 오프라인 테스트는 fastf1 없이 돈다
+
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     fastf1.Cache.configure(cache_dir=str(CACHE_DIR))
     # FastF1 3.9는 F1 계정 입력을 기다린다. 2022 Spa는 익명으로 받아지므로 프롬프트를 건너뛴다.

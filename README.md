@@ -9,8 +9,8 @@
 > v0.2 → v0.8 사이에 주제 축 자체가 바뀌었다 (피로수명 절대값 → 3축 상대 트레이드오프, 시나리오 A/B 이원화,
 > 마운트 위치 설계변수 추가, 블록 4 분리, 담당 재배정). 변경 요약은 [`docs/architecture.md`](docs/architecture.md) 상단 표 참고.
 
-이 레포는 **스캐폴딩 단계**다 — 모든 블록이 함수 시그니처 + `README.md` + `TODO`만 있는 상태고 실제 구현은
-비어 있다.
+**진행 상황**: FastF1 전처리(I0)만 구현·검증됨 (`python/fastf1_preprocessing/`, 2022 Spa 실데이터). 블록 1–7은
+아직 함수 시그니처 + `README.md` + `TODO`만 있는 스캐폴딩 상태다.
 
 ## 먼저 읽을 것
 
@@ -51,8 +51,7 @@
 4. **D12 (안전계수/비교 방식)** — 블록 5·6의 제약 판정(정적 안전계수, DEL vs 피로한도) 전제
 5. **D14 (스윕 격자·임계값)** — 블록 6을 실제로 돌리기 전 W1에 승인·고정해야 격자 크기(~300–480회)가 보장됨
 
-**지금 바로 시작해도 되는 것**: 블록 1(랩 시뮬, TUMFTM 트랙 로더 + 시나리오 A/B 뼈대), FastF1 전처리 스크립트,
-블록 7 뷰어 최소판 더미 데이터 뼈대, 블록 4b(COMSOL 열해석 모델 구성 — 액추에이터 사양과 독립적으로 2D
+**지금 바로 시작해도 되는 것**: 블록 1(랩 시뮬, TUMFTM 트랙 로더 + 시나리오 A/B 뼈대), 블록 7 뷰어 최소판 더미 데이터 뼈대, 블록 4b(COMSOL 열해석 모델 구성 — 액추에이터 사양과 독립적으로 2D
 축대칭 형상은 먼저 잡을 수 있음) — 이 넷은 위 결정사항과 독립적이다.
 
 ## 인터페이스 요약
@@ -88,8 +87,10 @@ p\* 결정, `docs/architecture.md` 참고).
 
 ```
 pip install fastf1 numpy pandas scipy
-git clone https://github.com/TUMFTM/racetrack-database data/tracks/racetrack-database
 ```
+
+TUMFTM Spa 트랙(`data/tracks/tumftm/`)과 I0 CSV(`data/raw/fastf1_spa.csv`)는 레포에 포함된다 — MATLAB 블록만 작업할
+때는 Python 환경이 필요 없다.
 
 ## 검증 체크리스트
 

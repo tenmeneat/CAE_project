@@ -12,13 +12,19 @@ pip install fastf1 numpy pandas scipy
 
 ## 실행
 
-TUMFTM 저장소를 `data/tracks/racetrack-database`에 받아 둔 뒤 실행한다. 기본값은 2022 벨기에 GP 레이스(D9)이고
-결과는 `data/raw/fastf1_spa.csv`로 나온다. F1 계정은 필요 없다.
+TUMFTM Spa 레이스라인은 `data/tracks/tumftm/`에 포함돼 있어 따로 받을 필요 없다. 기본값은 2022 벨기에 GP
+레이스(D9)이고 결과는 `data/raw/fastf1_spa.csv`로 나온다. F1 계정은 필요 없지만 FastF1 서버
+(`livetiming.formula1.com`, `api.jolpi.ca`) 접속이 필요하다.
+
+**결과 CSV는 레포에 커밋한다** (`.gitignore` 예외 처리됨). 블록 1은 이 파일만 읽으므로 FastF1 설치나 네트워크 없이
+MATLAB 작업을 시작할 수 있다. 전처리 로직이나 `--z-rms`를 바꿨을 때만 다시 만들고 다시 커밋한다.
 
 ```
 python python/fastf1_preprocessing/fastf1_to_csv.py
 python python/fastf1_preprocessing/test_fastf1_to_csv.py
 ```
+
+테스트는 합성 랩만 쓰므로 `fastf1` 없이 `numpy pandas scipy`만 있으면 돈다.
 
 `--z-rms`는 z 평활 강도 [m]이다 (D6 민감도 파라미터, 기본 0.1).
 
