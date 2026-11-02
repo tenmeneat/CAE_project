@@ -16,7 +16,7 @@
 
 1. [`docs/architecture.md`](docs/architecture.md) — 전체 파이프라인(블록 1–7), v0.2→v0.8 변경 요약, 함정 2개, 평가 지표·선정 규칙
 2. [`docs/interfaces.md`](docs/interfaces.md) — 블록 간 파일 계약 (I0–I5)
-3. [`docs/decisions.md`](docs/decisions.md) — 미결정 사항(D1–D18) 트래커. 확정 18건 / 결정 필요 9건, 막는 순서대로 정리됨
+3. [`docs/decisions.md`](docs/decisions.md) — 미결정 사항(D1–D18) 트래커. 확정 19건 / 결정 필요 9건, 막는 순서대로 정리됨
 4. [`docs/schedule.md`](docs/schedule.md) — **날짜 없는 게이트 기반 작업 순서** (W1–W7)
 
 ## 담당: 내가 A (동역학·제어·전처리·뷰어)
