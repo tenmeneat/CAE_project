@@ -34,3 +34,6 @@ outputs/
 .DS_Store
 .idea/
 .vscode/
+
+# Obsidian: 사람마다 바뀌는 창 배치는 제외
+.obsidian/workspace*.json

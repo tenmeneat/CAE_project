@@ -1,6 +1,6 @@
 """FastF1 -> I0 (fastf1_<track>.csv) 전처리.
 
-스키마는 ../../docs/interfaces.md 의 I0 정의를 따른다.
+스키마는 ../../docs/02-인터페이스.md 의 I0 정의를 따른다.
 실행: python python/fastf1_preprocessing/fastf1_to_csv.py
 """
 
@@ -21,7 +21,7 @@ CHANNELS = ["x", "y", "z", "v", "throttle", "brake"]
 
 
 def load_session(year: int, grand_prix: str, session: str):
-    """FastF1 세션 로드. session 예: 'R' (레이스). D9 기준 세션은 docs/decisions.md 참고."""
+    """FastF1 세션 로드. session 예: 'R' (레이스). D9 기준 세션은 docs/03-결정사항.md 참고."""
     import fastf1  # 여기서만 필요 — 오프라인 테스트는 fastf1 없이 돈다
 
     CACHE_DIR.mkdir(parents=True, exist_ok=True)

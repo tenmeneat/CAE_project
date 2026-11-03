@@ -9,7 +9,7 @@ function F_LCA = wheel_to_lca_forces(wf, hardpoints, mount_position_p)
 %     F_LCA - 시간별 로어암 하중 벡터 (볼조인트 Fx,Fy,Fz + 스프링·액추에이터 마운트 힘)
 %
 %   가정: 링크 질량 무시, 준정적, 미소 변위(하드포인트 고정). 너클 FBD -> 선형 연립방정식.
-%   모선비: F_act = F_wheel / mount_position_p (힌지축 모멘트 평형 단순화, README.md 참고).
+%   모선비: F_act = F_wheel / mount_position_p (힌지축 모멘트 평형 단순화, 블록3-휠력-로어암하중.md 참고).
 
 error('wheel_to_lca_forces:NotImplemented', 'TODO: 블록 3 구현 — D3/D16 확정 후 너클 FBD + MR(p) 환산');
 end

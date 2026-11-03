@@ -37,7 +37,7 @@ python python/fastf1_preprocessing/test_fastf1_to_csv.py
    s 정렬 — 설계안 4.1절)
 5. 여러 랩 평균 + 주기 평활 스플라인으로 고저 z(s) 추출 (노면 요철은 안 잡힘 — ISO 8608로 블록 1에서 별도 중첩)
 6. 곡률 상호상관으로 타이밍 라인과 TUMFTM 시작점의 위상차를 구해 순환 이동 (Spa 16 m)
-7. `fastf1_<track>.csv` 출력: `s, x, y, z, v, throttle, brake` (단위는 `docs/interfaces.md`)
+7. `fastf1_<track>.csv` 출력: `s, x, y, z, v, throttle, brake` (단위는 [02-인터페이스](../../docs/02-인터페이스.md))
 
 ## 블록 1에서 쓸 때
 
@@ -58,3 +58,10 @@ python python/fastf1_preprocessing/test_fastf1_to_csv.py
 Spa 파이프라인이 끝나고 여유가 있으면 블록 1만 교체해 뉘르부르크링 노르트슐라이페를 추가한다. I0 계약은
 유지되고 뒤 블록은 손대지 않는다. 데이터 소스는 OSM/RLP DGM1/TUMFTM 최적화기 조합 — 상세는 원본 설계안
 부록 참고.
+
+## 연결
+
+- 출력 I0 → [블록1-랩시뮬레이션](../../matlab/block1_lap_sim/블록1-랩시뮬레이션.md)
+- 입력 데이터: [TUMFTM-출처](../../data/tracks/tumftm/TUMFTM-출처.md) · 폴더 규칙: [데이터-폴더](../../data/데이터-폴더.md)
+- 결정: [03-결정사항](../../docs/03-결정사항.md) D6, D9
+- 작업 기록: [FastF1 전처리 구현과 검증](../../docs/작업기록/2026-11-02-FastF1-I0-구현.md), [I0 데이터 레포 포함](../../docs/작업기록/2026-11-02-I0-데이터-레포-포함.md)

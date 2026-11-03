@@ -9,3 +9,7 @@
 | `tracks/Spa.csv` | `# x_m,y_m,w_tr_right_m,w_tr_left_m` 중심선 + 트랙 폭 | 블록 1 시나리오 B |
 
 다른 서킷이 필요하면 원본 저장소에서 같은 경로(`racelines/<track>.csv`, `tracks/<track>.csv`)로 복사해 넣는다.
+
+## 연결
+
+- 폴더 규칙: [데이터-폴더](../../데이터-폴더.md) · 사용처: [전처리-FastF1-I0](../../../python/fastf1_preprocessing/전처리-FastF1-I0.md), [블록1-랩시뮬레이션](../../../matlab/block1_lap_sim/블록1-랩시뮬레이션.md)
