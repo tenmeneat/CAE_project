@@ -1,0 +1,65 @@
+{
+  "collapse-filter": true,
+  "search": "",
+  "showTags": false,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": true,
+  "colorGroups": [
+    {
+      "query": "path:docs/작업기록",
+      "color": {
+        "a": 1,
+        "rgb": 14721072
+      }
+    },
+    {
+      "query": "path:docs",
+      "color": {
+        "a": 1,
+        "rgb": 5016565
+      }
+    },
+    {
+      "query": "path:matlab",
+      "color": {
+        "a": 1,
+        "rgb": 3912307
+      }
+    },
+    {
+      "query": "path:comsol",
+      "color": {
+        "a": 1,
+        "rgb": 14242639
+      }
+    },
+    {
+      "query": "path:python",
+      "color": {
+        "a": 1,
+        "rgb": 10181046
+      }
+    },
+    {
+      "query": "path:data",
+      "color": {
+        "a": 1,
+        "rgb": 10181046
+      }
+    }
+  ],
+  "collapse-display": true,
+  "showArrow": false,
+  "textFadeMultiplier": 0,
+  "nodeSizeMultiplier": 1,
+  "lineSizeMultiplier": 1,
+  "collapse-forces": true,
+  "centerStrength": 0.518713248970312,
+  "repelStrength": 10,
+  "linkStrength": 1,
+  "linkDistance": 250,
+  "scale": 0.22920128378831117,
+  "close": false
+}

@@ -6,7 +6,7 @@ function render_replay(i3_mat_path, i4_mat_path, out_mp4_path, opts)
 %   출력: VideoWriter로 1080p 30fps MP4.
 %
 %   최소판(필수): 트랙맵 + 차량 마커 + 동기 그래프. 응력 연동 색칠, F1 비교, 슬로모 클립은 선택 —
-%   시간이 모자라면 먼저 뺀다(README.md, docs/schedule.md 축소 우선순위 참고).
+%   시간이 모자라면 먼저 뺀다(블록7-리플레이뷰어.md, docs/04-작업순서.md 축소 우선순위 참고).
 %   구현 뼈대: patch(EdgeColor='interp') 색칠 트랙, hgtransform 차량, xline 커서, drawnow->getframe->writeVideo.
 %   주의: 그래프는 원본 해상도로 미리 그리고 커서만 이동 (다운샘플링하면 피크 소실).
 

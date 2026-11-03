@@ -18,12 +18,14 @@ venv/
 *.egg-info/
 
 # Data / generated outputs (large, regenerable — do not commit)
-data/raw/
-data/tracks/*
-!data/tracks/.gitkeep
+data/raw/*
+data/tracks/racetrack-database/
 *.mat
 *.csv
 !**/schema_example.csv
+# 예외: 레포에 올리는 데이터 (작고, 재생성에 외부 네트워크가 필요)
+!data/raw/fastf1_*.csv
+!data/tracks/tumftm/**/*.csv
 outputs/
 *.mp4
 *.avi
@@ -32,3 +34,6 @@ outputs/
 .DS_Store
 .idea/
 .vscode/
+
+# Obsidian: 사람마다 바뀌는 창 배치는 제외
+.obsidian/workspace*.json
