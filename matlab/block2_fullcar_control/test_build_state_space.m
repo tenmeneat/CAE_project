@@ -26,12 +26,12 @@ steady = @(u) -A \ (B * u);
 dFz = @(x, zr) info.kt * (zr - x(4:7));
 
 %   노면 4개 동시 +1 cm → 전체가 1 cm 상승, 하중 변화 없음
-x = steady([zeros(4,1); 0.01*ones(4,1); 0; 0]);
+x = steady([zeros(4,1); 0.01*ones(4,1); 0; 0; 0; 0]);
 assert(max(abs(x([1 4:7]) - 0.01)) < 1e-9 && max(abs(x(2:3))) < 1e-12, '노면 균일 상승 DC 이득 이상');
 
 %   좌회전 1 g (ay > 0): 좌측 상승(φ > 0), 우측 하중 증가, ΣΔFz = 0, Σ y·ΔFz = −M_φ
 Mphi = info.ms * p.g * p.h_cg;
-x = steady([zeros(8,1); 0; p.g]);  d = dFz(x, 0);
+x = steady([zeros(8,1); 0; p.g; 0; 0]);  d = dFz(x, 0);
 fprintf('롤 구배 %.2f deg/g, 앞 롤강성 비 %.2f, ΔFz [FL FR RL RR] = %s N\n', rad2deg(x(3)), ...
     (d(2) - d(1)) * p.tf / ((d(2) - d(1)) * p.tf + (d(4) - d(3)) * p.tr), mat2str(round(d')));
 assert(x(3) > 0 && d(2) > 0 && d(1) < 0, '롤 부호 이상');
@@ -42,13 +42,17 @@ fprintf('스태빌라이저 k_arb 앞/뒤 = %s N/mm (휠 기준)\n', mat2str(inf
 
 %   제동 1 g (ax < 0): 노즈 다운(θ > 0), 앞 하중 증가, Σ x·ΔFz = M_θ
 Mth = -info.ms * (-p.g) * p.h_cg;
-x = steady([zeros(8,1); -p.g; 0]);  d = dFz(x, 0);
+x = steady([zeros(8,1); -p.g; 0; 0; 0]);  d = dFz(x, 0);
 fprintf('피치 구배 %.2f deg/g (제동), 앞축 ΔFz = %.0f N\n', rad2deg(x(2)), d(1) + d(2));
 assert(x(2) > 0 && d(1) > 0 && d(3) < 0, '피치 부호 이상');
 assert(abs(sum(d)) < 1e-6 && abs(info.xi' * d - Mth) < 1e-6, '피치 모멘트 평형 이상');
 
+%   노면 추세 압축 (앞·뒤 z̈_ref = +5 m/s², 오목한 구간): 관성력으로 타이어 하중 합이 m·5 증가, 자세 변화 없음
+x = steady([zeros(10,1); 5; 5]);  d = dFz(x, 0);
+assert(abs(sum(d) - p.m * 5) < 1e-6 * p.m && abs(x(3)) < 1e-12, '추세 관성력 이상');
+
 %   액추에이터: FL만 +1 kN → 차체 FL 상승, 휠 하강(타이어 하중 증가), 내력이라 ΣΔFz = 0
-x = steady([1000; zeros(9,1)]);  d = dFz(x, 0);
+x = steady([1000; zeros(11,1)]);  d = dFz(x, 0);
 zb = info.T * x(1:3);
 assert(zb(1) > 0 && x(4) < 0 && abs(sum(d)) < 1e-6, '액추에이터 부호 이상');
 disp('test_build_state_space OK');
