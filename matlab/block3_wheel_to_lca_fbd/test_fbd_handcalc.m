@@ -24,8 +24,8 @@ for k = 1:size(ref, 1)
     assert(abs(x(8) / (Fz0 / (p*cos(hc.alpha))) - 1) < 0.05, '2D 지렛대 손계산과 5% 넘게 다름');
 
     % 1) 정적 수직하중 (m_u 포함): F_s = (Fz − m_u·g)/MR
-    wf = struct('t', 0, 's', 0, 'Fx', zeros(1,4), 'Fy', zeros(1,4), 'Fz', Fz0*ones(1,4), 'zdd_u', zeros(1,4), ...
-        'F_spring', zeros(1,4), 'F_damper', zeros(1,4), 'F_act', zeros(1,4));
+    Z = zeros(1, 4);
+    wf = struct('t', 0, 's', 0, 'F_wc', cat(3, Z, Z, Fz0*ones(1,4)), 'a_u', Z, 'F_spring', Z, 'F_damper', Z, 'F_act', Z);
     out = wheel_to_lca_forces(wf, hardpoints_f82(p), vp);
     assert(all(abs(out.F_M ./ ((Fz0 - vp.m_u*vp.g) ./ out.MR) - 1) < 1e-6), '정적 F_s ≠ (Fz − m_u·g)/MR');
 end

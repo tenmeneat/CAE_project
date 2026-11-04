@@ -2,7 +2,7 @@ function F_LCA = wheel_to_lca_forces(wf, hp, vp)
 %WHEEL_TO_LCA_FORCES 휠력 → 로어암 하중 변환 (블록 3, 준정적 FBD).
 %   F_LCA = WHEEL_TO_LCA_FORCES(wf, hp, vp)
 %   입력:
-%     wf - 인터페이스 I1 구조체 (블록3-휠력-로어암하중.md 4절, 블록 2 병합 전 가정 스키마 [동기화])
+%     wf - 인터페이스 I1 구조체 (블록 2 export_i1, 노트 4절). validate_i1로 검사·보완
 %     hp - hardpoints_f82(p_front). 프런트 p는 hp.p, 리어는 hp.p_rear (D18)
 %     vp - block3_params()
 %   출력 (좌측 등가 좌표, 코너 순서 FL FR RL RR):
@@ -12,25 +12,23 @@ function F_LCA = wheel_to_lca_forces(wf, hp, vp)
 %     u_s_loc    - 3×4 스트럿 단위벡터 (마운트 → 차체), 로컬 좌표
 %     F_act_act  - N×4 액추에이터 실제 힘 = F_act / MR
 %     resid_Fs   - N×4 F_M − (F_spring + F_damper + F_act + F_arb)/MR  (anti-dive·롤센터 재킹 등).
-%                  wf.F_arb(스태빌라이저, 휠 기준)가 없으면 0. 스태빌라이저 링크도 마운트점 p에 단다고 가정
+%                  스태빌라이저 링크도 마운트점 p에 단다고 가정
 %     MR         - 1×4 정역학 모션비
 %     F_UBJ, f_T - N×3×4 UBJ에서 상부암이 받는 힘 −F_U (차량 좌표), N×4 타이로드 축력 (인장 +). 진단용
 %     T          - 8×6×4 영향 행렬 x = T·[F_cp; F_wc]
-%     Rloc, meta - 3×3×4 로어암 로컬 축 [e1 e2 e3], struct (p, p_rear, scn, ctrl, hp_version, geo)
+%     Rloc, meta - 3×3×4 로어암 로컬 축 [e1 e2 e3], struct (p, p_rear, track, scenario, ctrl, hp_version, geo)
 
-if isfield(wf, 'p_front') && abs(wf.p_front - hp.p) > 1e-9
-    error('wheel_to_lca_forces:PMismatch', 'wf.p_front = %g 이지만 hp.p = %g', wf.p_front, hp.p);
+wf = validate_i1(wf, vp);
+if isfield(wf.meta, 'mount_p') && isfinite(wf.meta.mount_p) && abs(wf.meta.mount_p - hp.p) > 1e-9
+    error('wheel_to_lca_forces:PMismatch', 'I1 meta.mount_p = %g 이지만 hp.p = %g', wf.meta.mount_p, hp.p);
 end
-if ~isfield(wf, 'zdd_u')
-    warning('wheel_to_lca_forces:NoZddU', 'wf.zdd_u 없음 → 0으로 둠 (준정적 근사, 휠홉 대역 오차)');
-end
-if any(wf.Fx(:, 1:2) > 0, 'all')
+if any(wf.F_wc(:, 1:2, 1) > 0, 'all')
     warning('wheel_to_lca_forces:FrontDrive', '프런트에 구동 Fx > 0 — F82는 후륜구동. 휠센터 작용으로 처리');
 end
 
 N = numel(wf.t);
-F_LCA.t = wf.t(:);
-F_LCA.s = wf.s(:);
+F_LCA.t = wf.t;
+F_LCA.s = wf.s;
 F_LCA.F_BJ = zeros(N, 3, 4);
 F_LCA.F_UBJ = zeros(N, 3, 4);
 F_LCA.F_M = zeros(N, 4);
@@ -60,19 +58,13 @@ for i = 1:4
 end
 
 F_LCA.F_act_act = wf.F_act ./ F_LCA.MR;
-F_sus = wf.F_spring + wf.F_damper + wf.F_act;
-if isfield(wf, 'F_arb'), F_sus = F_sus + wf.F_arb; end
-F_LCA.resid_Fs = F_LCA.F_M - F_sus ./ F_LCA.MR;
+F_LCA.resid_Fs = F_LCA.F_M - (wf.F_spring + wf.F_damper + wf.F_act + wf.F_arb) ./ F_LCA.MR;
 
-if isfield(wf, 'MR') && any(abs(wf.MR(:)' - F_LCA.MR) > 1e-3)
-    warning('wheel_to_lca_forces:MRMismatch', 'wf.MR [%s] ≠ 블록 3 MR [%s]', ...
-        num2str(wf.MR(:)', '%.4f '), num2str(F_LCA.MR, '%.4f '));
+if isfield(wf.meta, 'MR') && any(abs(wf.meta.MR(:)' - F_LCA.MR) > 1e-3)
+    warning('wheel_to_lca_forces:MRMismatch', 'I1 meta.MR [%s] ≠ 블록 3 MR [%s]', ...
+        num2str(wf.meta.MR(:)', '%.4f '), num2str(F_LCA.MR, '%.4f '));
 end
 
-F_LCA.meta = struct('p', hp.p, 'p_rear', hp.p_rear, 'scn', getf(wf, 'scn'), 'ctrl', getf(wf, 'ctrl'), ...
-    'hp_version', hp.version, 'geo', meta_geo);
-end
-
-function v = getf(s, f)
-if isfield(s, f), v = s.(f); else, v = ''; end
+F_LCA.meta = struct('p', hp.p, 'p_rear', hp.p_rear, 'track', wf.meta.track, 'scenario', wf.meta.scenario, ...
+    'ctrl', wf.meta.ctrl, 'hp_version', hp.version, 'geo', meta_geo);
 end
