@@ -1,4 +1,5 @@
 %TEST_FBD_HANDCALC 블록 3 손계산 대조 (설계 9절 테스트 1–3 + 프로토타입 회귀값). 실패하면 assert 에러.
+addpath(fullfile(fileparts(mfilename('fullpath')), '..', 'block1_lap_sim'));
 vp = block3_params();
 Fz0 = 1642 * 0.523 * 9.81 / 2;     % 앞 코너 정적 하중 4,212 N
 

@@ -11,7 +11,8 @@ function F_LCA = wheel_to_lca_forces(wf, hp, vp)
 %     F_M        - N×4 마운트에서 로어암이 받는 스트럿 힘 크기 (압축 +). 로어암에는 −F_M·u_s_loc
 %     u_s_loc    - 3×4 스트럿 단위벡터 (마운트 → 차체), 로컬 좌표
 %     F_act_act  - N×4 액추에이터 실제 힘 = F_act / MR
-%     resid_Fs   - N×4 F_M − (F_spring + F_damper + F_act)/MR  (anti-dive·롤센터 재킹 등)
+%     resid_Fs   - N×4 F_M − (F_spring + F_damper + F_act + F_arb)/MR  (anti-dive·롤센터 재킹 등).
+%                  wf.F_arb(스태빌라이저, 휠 기준)가 없으면 0. 스태빌라이저 링크도 마운트점 p에 단다고 가정
 %     MR         - 1×4 정역학 모션비
 %     F_UBJ, f_T - N×3×4 UBJ에서 상부암이 받는 힘 −F_U (차량 좌표), N×4 타이로드 축력 (인장 +). 진단용
 %     T          - 8×6×4 영향 행렬 x = T·[F_cp; F_wc]
@@ -59,7 +60,9 @@ for i = 1:4
 end
 
 F_LCA.F_act_act = wf.F_act ./ F_LCA.MR;
-F_LCA.resid_Fs = F_LCA.F_M - (wf.F_spring + wf.F_damper + wf.F_act) ./ F_LCA.MR;
+F_sus = wf.F_spring + wf.F_damper + wf.F_act;
+if isfield(wf, 'F_arb'), F_sus = F_sus + wf.F_arb; end
+F_LCA.resid_Fs = F_LCA.F_M - F_sus ./ F_LCA.MR;
 
 if isfield(wf, 'MR') && any(abs(wf.MR(:)' - F_LCA.MR) > 1e-3)
     warning('wheel_to_lca_forces:MRMismatch', 'wf.MR [%s] ≠ 블록 3 MR [%s]', ...

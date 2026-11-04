@@ -7,7 +7,8 @@ function wf = make_dummy_i1(scn, opts)
 %                 .lap      struct(t, v, ax, ay, s) — 주면 lap_sim 대신 사용 (테스트용)
 %                 .road     ISO 8608 성분 (미구현 — 쿼터카 파라미터가 D3에서 정해지면 추가)
 %
-%   Fz_i = 정적 + 종방향 이동(m·ax·h/L, 앞뒤 ±½) + 횡방향 이동(λ_f·m·ay·h/t_f 앞, (1−λ_f)·m·ay·h/t_r 뒤)
+%   Fz_i = 정적 + 종방향 이동(m·ax·h/L, 앞뒤 ±½) + 횡방향 이동(λ·m·ay·h/t_f 앞, (1−λ)·m·ay·h/t_r 뒤),
+%          λ = f82_params().lltd_f (블록 2와 같은 앞 비율)
 %   Fy_i = m·ay·Fz_i/ΣFz.  Fx 합 = m·ax + 항력 — 제동은 Fz 비례 네 바퀴, 구동은 후륜 둘에만.
 %   F_spring = Fz − m_u·g (휠 기준), F_damper = F_act = 0, zdd_u = 0.
 
@@ -38,11 +39,10 @@ rs = @(y) interp1(lap.t, y, t);
 v = rs(lap.v);  ax = rs(lap.ax);  ay = rs(lap.ay);
 
 m = cp.m;  h = cp.h_cg;  g = cp.g;
-tf = 2 * hp.c(1).WC(2);  tr = 2 * hp.c(3).WC(2);
 Fz0 = m * g / 2 * [1 - cp.w_rear, 1 - cp.w_rear, cp.w_rear, cp.w_rear];
 dlong = m * ax * h / cp.L / 2;
-dlat_f = vp.lam_f * m * ay * h / tf;
-dlat_r = (1 - vp.lam_f) * m * ay * h / tr;
+dlat_f = vp.lltd_f * m * ay * h / vp.tf;
+dlat_r = (1 - vp.lltd_f) * m * ay * h / vp.tr;
 Fz = Fz0 + [-dlong - dlat_f, -dlong + dlat_f, dlong - dlat_r, dlong + dlat_r];   % ay > 0 (좌회전) → 우측 증가
 if any(Fz < 0, 'all')
     warning('make_dummy_i1:WheelLift', '바퀴 들림 %d 샘플 → Fz = 0으로 자름', nnz(any(Fz < 0, 2)));

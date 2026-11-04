@@ -33,6 +33,8 @@ S = make_dummy_i1('A', lap_opts(struct('t', [0; 1], 'v', [0; 0], 'ax', [0; 0], '
 oS = wheel_to_lca_forces(S, hp, vp);
 assert(all(abs(sum(S.Fz, 2) - cp.m*cp.g) < 1e-6), 'ΣFz ≠ m·g');
 assert(max(abs(oS.resid_Fs), [], 'all') < 1e-6, '정지 상태 resid_Fs ≠ 0');
+S.F_arb = 300 * ones(size(S.Fz));  S.F_spring = S.F_spring - S.F_arb;   % 스태빌라이저가 지지력 일부를 맡아도 잔차 0
+assert(max(abs(wheel_to_lca_forces(S, hp, vp).resid_Fs), [], 'all') < 1e-6, 'F_arb가 resid_Fs에 안 들어감');
 fprintf('정지: F_M = [%s] N, MR = [%s]\n', num2str(oS.F_M(1, :), '%.0f '), num2str(oS.MR, '%.4f '));
 disp('test_fbd_equilibrium OK');
 
